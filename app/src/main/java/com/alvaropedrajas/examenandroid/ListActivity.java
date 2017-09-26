@@ -21,7 +21,6 @@ public class ListActivity extends Activity implements View.OnClickListener{
 
     private ListView listView;
     ArrayList<Contacto> contactos = new ArrayList<Contacto>();
-    TextView tv_name = (TextView) findViewById(R.id.tv_name);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +81,35 @@ public class ListActivity extends Activity implements View.OnClickListener{
             @Override
             public void onClick(DialogInterface diag, int i) {
 
-
-                Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
+                getDatos();
+                //Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ListActivity.this, "El contacto es: " + cont.getNombre(), Toast.LENGTH_SHORT).show();
 
             }
         });
         alerta.show();
+    }
+
+    Contacto cont = null;
+
+    public Contacto getDatos(){
+
+        TextView tv_name = (TextView) findViewById(R.id.tv_name);
+        TextView tv_mail = (TextView) findViewById(R.id.tv_mail);
+        TextView tv_phone = (TextView) findViewById(R.id.tv_phone);
+
+        String nombre, mail;
+        Integer telefono;
+
+        nombre = tv_name.getText().toString();
+        mail = tv_mail.getText().toString();
+        telefono= Integer.parseInt(tv_phone.getText().toString());
+
+        cont.setNombre(nombre);
+        cont.setMail(mail);
+        cont.setTelefono(telefono);
+
+        return cont;
     }
 
     @Override
