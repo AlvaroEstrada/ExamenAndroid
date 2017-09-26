@@ -1,9 +1,6 @@
 package com.alvaropedrajas.examenandroid;
 
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -23,7 +20,6 @@ public class ListActivity extends Activity implements View.OnClickListener{
 
     private ListView listView;
     ArrayList<Contacto> contactos = new ArrayList<Contacto>();
-    AlertDialog diag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +54,40 @@ public class ListActivity extends Activity implements View.OnClickListener{
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
             {
-                FragmentManager fragmentManager = getFragmentManager();
-                new Dialogo().show(fragmentManager, "Dialogo");
-                //Toast.makeText(ListActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-
+                dialog();
             }
         });
 
     }
 
+    public void dialog() {
+        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+        alerta.setMessage("¿Que desea hacer?");
+        alerta.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface diag, int i) {
+                Toast.makeText(ListActivity.this, "Has seleccionado Borrar", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alerta.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface diag, int i) {
+                diag.cancel();
+            }
+        });
+        alerta.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface diag, int i) {
+
+                Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        alerta.show();
+    }
+
     @Override
-    public void onClick(View v) {
+    public void onClick (View v){
         finish();
     }
 
