@@ -40,7 +40,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        test();
+
     }
+
+    public void test(){
+        listaContactos.add(new Contacto("Alvaro", "a@a.com", 123456));
+        listaContactos.add(new Contacto("Margarita", "e@e.com", 98462));
+
+        ObjectOutputStream x = null;
+        try {
+            archivo = this.openFileOutput("prueba.dat", this.MODE_PRIVATE);
+            x = new ObjectOutputStream(archivo);
+            x.writeObject(listaContactos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

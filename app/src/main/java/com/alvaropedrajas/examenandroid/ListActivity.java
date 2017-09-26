@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -20,6 +21,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
 
     private ListView listView;
     ArrayList<Contacto> contactos = new ArrayList<Contacto>();
+    TextView tv_name = (TextView) findViewById(R.id.tv_name);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
     }
 
     public void dialog() {
+
         AlertDialog.Builder alerta = new AlertDialog.Builder(this);
         alerta.setMessage("¿Que desea hacer?");
         alerta.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
@@ -78,6 +81,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
         alerta.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface diag, int i) {
+
 
                 Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
 
