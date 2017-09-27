@@ -14,9 +14,9 @@ import java.util.Objects;
 
 public class DeleteActivity extends AppCompatActivity implements View.OnClickListener{
 
-    EditText et_name, et_mail, et_phone;
-    String nom, mail;
-    Integer tel;
+    private EditText et_name, et_mail, et_phone;
+    private String nom, mail;
+    private Integer tel;
 
     boolean delFlag;
 

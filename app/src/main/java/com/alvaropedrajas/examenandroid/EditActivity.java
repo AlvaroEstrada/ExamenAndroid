@@ -1,7 +1,6 @@
 package com.alvaropedrajas.examenandroid;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -11,23 +10,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class EditActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText et_name, et_mail, et_phone;
-    String nom, mail;
-    Integer tel;
+    private EditText et_name, et_mail, et_phone;
+    private String nom, mail;
+    private Integer tel;
 
     boolean editFlag;
 
     private Contacto contacto = new Contacto();
-    FileOutputStream archivo;
-    Activity activity = this;
+    private FileOutputStream archivo;
+    private Activity activity = this;
     private ArrayList<Contacto> listaContactos = new ArrayList<>();
 
     @Override

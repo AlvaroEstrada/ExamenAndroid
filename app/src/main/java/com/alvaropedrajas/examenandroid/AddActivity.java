@@ -15,10 +15,10 @@ import java.util.Objects;
 
 public class AddActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText et_name, et_mail, et_phone;
-    String nom, mail;
-    Integer tel;
-    Drawable img;
+    private EditText et_name, et_mail, et_phone;
+    private String nom, mail;
+    private Integer tel;
+    private Drawable img;
 
     boolean regFlag;
 
