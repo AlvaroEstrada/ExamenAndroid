@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ContentFrameLayout;
+import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int BAJA = 200;
     private static final int LISTAR = 300;
     private static final int EDITAR = 400;
+    private static final int BORRAR = 500;
 
     private ArrayList<Contacto> listaContactos = new ArrayList<>();
     FileOutputStream archivo;
@@ -36,13 +39,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDel.setOnClickListener(this);
         btnList.setOnClickListener(this);
         try {
-            archivo = this.openFileOutput("prueba.dat", this.MODE_PRIVATE);
+            archivo = this.openFileOutput("ListaContactos.dat", this.MODE_PRIVATE);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         test();
-
     }
 
     public void test(){
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ObjectOutputStream x = null;
         try {
-            archivo = this.openFileOutput("prueba.dat", this.MODE_PRIVATE);
+            archivo = this.openFileOutput("ListaContactos.dat", this.MODE_PRIVATE);
             x = new ObjectOutputStream(archivo);
             x.writeObject(listaContactos);
         } catch (IOException e) {
@@ -68,16 +70,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case ALTA:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data.hasExtra("contacto")){
-                        listaContactos.add((Contacto)data.getSerializableExtra("contacto"));
+                        Contacto c = (Contacto) data.getSerializableExtra("contacto");
+                        listaContactos.add(c);
                         ObjectOutputStream x = null;
                         try {
-                            archivo = this.openFileOutput("prueba.dat", this.MODE_PRIVATE);
+                            archivo = this.openFileOutput("ListaContactos.dat", this.MODE_PRIVATE);
                             x = new ObjectOutputStream(archivo);
                             x.writeObject(listaContactos);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        Toast.makeText(this, listaContactos.get(listaContactos.size()-1).getNombre() + " ha sido guardado", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, c.getNombre() + " ha sido guardado", Toast.LENGTH_LONG).show();
                     }
                 } else if(resultCode == Activity.RESULT_CANCELED) {
                     Toast.makeText(this, "No se ha guardado ningún contacto", Toast.LENGTH_LONG).show();
@@ -99,12 +102,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case EDITAR:
                 if (resultCode == Activity.RESULT_OK) {
-                    if (data.hasExtra("contacto")){
-                        listaContactos.add((Contacto)data.getSerializableExtra("contacto"));
-                        Toast.makeText(this, listaContactos.get(listaContactos.size()-1).getNombre() + " ha sido guardado", Toast.LENGTH_LONG).show();
+                    if (data.hasExtra("cont")){
+
                     }
                 } else if(resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(this, "No se ha guardado ningún contacto", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "No se ha editado ningún contacto", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case BORRAR:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data.hasExtra("contacto")){
+                        Contacto c = (Contacto) data.getSerializableExtra("contacto");
+                        listaContactos.remove(c);
+                        ObjectOutputStream x = null;
+                        try {
+                            archivo = this.openFileOutput("ListaContactos.dat", this.MODE_PRIVATE);
+                            x = new ObjectOutputStream(archivo);
+                            x.writeObject(listaContactos);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(this, c.getNombre() + "ha sido eliminado", Toast.LENGTH_LONG).show();
+                    }
+                } else if(resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "No se ha eliminado ningún contacto", Toast.LENGTH_LONG).show();
                 }
                 break;
         }

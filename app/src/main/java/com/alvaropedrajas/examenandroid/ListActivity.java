@@ -2,6 +2,8 @@ package com.alvaropedrajas.examenandroid;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -21,23 +23,13 @@ public class ListActivity extends Activity implements View.OnClickListener{
 
     private ListView listView;
     ArrayList<Contacto> contactos = new ArrayList<Contacto>();
+    private int pos;
+    private Contacto cont = new Contacto();
+    Activity activity;
+    ContactoAdaptador adaptador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        FileInputStream in = null;
-        ObjectInputStream b = null;
-        try {
-            in = this.openFileInput("prueba.dat");
-            b = new ObjectInputStream(in);
-            contactos = (ArrayList<Contacto>) b.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
 
         //contactos = (ArrayList<Contacto>)getIntent().getSerializableExtra("listaC");
 
@@ -48,13 +40,32 @@ public class ListActivity extends Activity implements View.OnClickListener{
         Button btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
 
+
+        FileInputStream in = null;
+        ObjectInputStream b = null;
+        try {
+            in = this.openFileInput("ListaContactos.dat");
+            b = new ObjectInputStream(in);
+            contactos = (ArrayList<Contacto>) b.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         this.listView = (ListView) findViewById(R.id.lv_main);
-        this.listView.setAdapter(new ContactoAdaptador(this, contactos));
+        adaptador = new ContactoAdaptador(this, contactos);
+        this.listView.setAdapter(adaptador);
+        adaptador.notifyDataSetChanged();
 
         this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
             {
+                pos = position;
+                contactos.get(pos);
                 dialog();
             }
         });
@@ -68,6 +79,12 @@ public class ListActivity extends Activity implements View.OnClickListener{
         alerta.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface diag, int i) {
+
+                getDatos(contactos.get(pos));
+
+                Intent intDel = new Intent(ListActivity.this, DeleteActivity.class);
+                intDel.putExtra("cont", cont);
+                startActivityForResult(intDel, 0);
                 Toast.makeText(ListActivity.this, "Has seleccionado Borrar", Toast.LENGTH_SHORT).show();
             }
         });
@@ -81,35 +98,24 @@ public class ListActivity extends Activity implements View.OnClickListener{
             @Override
             public void onClick(DialogInterface diag, int i) {
 
-                getDatos();
-                //Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
-                Toast.makeText(ListActivity.this, "El contacto es: " + cont.getNombre(), Toast.LENGTH_SHORT).show();
+                getDatos(contactos.get(pos));
+
+                Intent intEdit = new Intent(ListActivity.this, EditActivity.class);
+                intEdit.putExtra("cont", cont);
+                startActivityForResult(intEdit, 0);
+                Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
 
             }
         });
         alerta.show();
     }
 
-    Contacto cont = null;
+    public void getDatos(Contacto pos){
 
-    public Contacto getDatos(){
+        cont.setNombre(pos.getNombre().toString());
+        cont.setMail(pos.getMail().toString());
+        cont.setTelefono(Integer.parseInt(pos.getTelefono().toString()));
 
-        TextView tv_name = (TextView) findViewById(R.id.tv_name);
-        TextView tv_mail = (TextView) findViewById(R.id.tv_mail);
-        TextView tv_phone = (TextView) findViewById(R.id.tv_phone);
-
-        String nombre, mail;
-        Integer telefono;
-
-        nombre = tv_name.getText().toString();
-        mail = tv_mail.getText().toString();
-        telefono= Integer.parseInt(tv_phone.getText().toString());
-
-        cont.setNombre(nombre);
-        cont.setMail(mail);
-        cont.setTelefono(telefono);
-
-        return cont;
     }
 
     @Override
