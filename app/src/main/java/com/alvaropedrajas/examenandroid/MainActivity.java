@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<Contacto> listaContactos = new ArrayList<>();
     //FileOutputStream archivo;
+    private Activity activity = this;
 
 
     @Override
@@ -58,18 +59,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        listaContactos = Utils.readFile(activity);
         switch (v.getId()){
             case R.id.btnAdd:
                 Intent intAdd = new Intent(this, AddActivity.class);
                 this.startActivity(intAdd);
                 break;
+
             case R.id.btnDel:
-                Intent intDel = new Intent(this, DeleteActivity.class);
-                this.startActivity(intDel);
+                if (listaContactos.size() > 0){
+                    Intent intDel = new Intent(this, DeleteActivity.class);
+                    this.startActivity(intDel);
+                }else{
+                    Toast.makeText(this, "¡La lista de contactos está vacia!", Toast.LENGTH_LONG).show();
+                }
                 break;
+
             case R.id.btnList:
-                Intent intList = new Intent(this, ListActivity.class);
-                this.startActivity(intList);
+                if (listaContactos.size() > 0){
+                    Intent intList = new Intent(this, ListActivity.class);
+                    this.startActivity(intList);
+                }else{
+                    Toast.makeText(this, "¡La lista de contactos está vacia!", Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
 
