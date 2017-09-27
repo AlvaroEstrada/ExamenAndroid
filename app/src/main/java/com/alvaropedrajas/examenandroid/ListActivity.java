@@ -2,21 +2,13 @@ package com.alvaropedrajas.examenandroid;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class ListActivity extends Activity implements View.OnClickListener{
@@ -31,8 +23,6 @@ public class ListActivity extends Activity implements View.OnClickListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        //contactos = (ArrayList<Contacto>)getIntent().getSerializableExtra("listaC");
 
         super.onCreate(savedInstanceState);
 
@@ -50,7 +40,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
             {
-                Utils.readFile(activity);
+                contactos = Utils.readFile(activity);
                 pos = position;
                 contactos.get(pos);
                 Utils.setPosition(pos);
