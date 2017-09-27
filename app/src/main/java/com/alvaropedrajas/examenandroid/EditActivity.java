@@ -1,5 +1,6 @@
 package com.alvaropedrajas.examenandroid;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,21 +13,22 @@ import android.widget.Toast;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EditActivity extends AppCompatActivity implements View.OnClickListener{
+public class EditActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText et_name, et_mail, et_phone;
     String nom, mail;
     Integer tel;
 
-    private static final int EDIT_OK = 100;
+    boolean editFlag;
 
-    boolean delFlag;
-
-    Contacto contacto;
+    private Contacto contacto = new Contacto();
     FileOutputStream archivo;
+    Activity activity = this;
+    private ArrayList<Contacto> listaContactos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,101 +42,73 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         btnBack.setOnClickListener(this);
         btnDel.setOnClickListener(this);
 
-        if (getIntent().hasExtra("cont")){
-            Contacto c = (Contacto) getIntent().getSerializableExtra("cont");
-
-            et_name.setText(c.getNombre().toString());
-            et_mail.setText(c.getMail().toString());
-            et_phone.setText(c.getTelefono().toString());
+        if (getIntent().hasExtra("contForEdit")) {
+            Contacto c = (Contacto) getIntent().getSerializableExtra("contForEdit");
+            Utils.rellenaCampos(c, et_name, et_mail, et_phone);
         }
 
     }
 
-    public void getDatos(View v){
+    public void getDatos(View v) {
 
-        if (!TextUtils.isEmpty(et_name.getText().toString())){
+        if (!TextUtils.isEmpty(et_name.getText().toString())) {
             nom = et_name.getText().toString();
-        }else{
+        } else {
             et_name.setError("Debes introducir un nombre!");
             nom = null;
         }
 
-        if (!TextUtils.isEmpty(et_mail.getText().toString())){
+        if (!TextUtils.isEmpty(et_mail.getText().toString())) {
             mail = et_mail.getText().toString();
-        }else{
+        } else {
             et_mail.setError("Debes introducir un email!");
             mail = null;
         }
 
-        if (!TextUtils.isEmpty(et_phone.getText().toString())){
+        if (!TextUtils.isEmpty(et_phone.getText().toString())) {
             tel = Integer.parseInt(et_phone.getText().toString());
-        }else{
+        } else {
             et_phone.setError("Debes introducir un teléfono!");
             tel = null;
         }
 
-        if (!Objects.equals(nom, null) && !Objects.equals(mail, null) && !Objects.equals(tel, null)){
-            delFlag = true;
-        }else{
-            delFlag = false;
+        if (!Objects.equals(nom, null) && !Objects.equals(mail, null) && !Objects.equals(tel, null)) {
+            editFlag = true;
+        } else {
+            editFlag = false;
             Toast.makeText(this, "¡Debes rellenar todos los campos!", Toast.LENGTH_LONG).show();
             return;
         }
     }
 
-    public Contacto regDatos(String nom, String mail, Integer tel){
+    public Contacto regDatos(String nom, String mail, Integer tel) {
         contacto.setNombre(nom);
         contacto.setMail(mail);
         contacto.setTelefono(tel);
-
         return contacto;
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data.hasExtra("cont")){
-            Contacto c = (Contacto) data.getSerializableExtra("cont");
-
-            et_name.setText(c.getNombre().toString());
-            et_mail.setText(c.getMail().toString());
-            et_phone.setText(Integer.parseInt(c.getTelefono().toString()));
-
-            ObjectOutputStream x = null;
-            try {
-                archivo = this.openFileOutput("ListaContactos.dat", this.MODE_PRIVATE);
-                x = new ObjectOutputStream(archivo);
-                x.writeObject(c);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(this, c.getNombre() + " ha sido editado", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnBack:
                 setResult(RESULT_CANCELED);
                 finish();
                 break;
             case R.id.btnEdit:
                 getDatos(v);
-                if (delFlag){
-                    ObjectOutputStream x = null;
-                    try {
-                        archivo = this.openFileOutput("ListaContactos.dat", this.MODE_PRIVATE);
-                        x = new ObjectOutputStream(archivo);
-                        x.writeObject(contacto);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                regDatos(nom, mail, tel);
+                if (editFlag) {
+                    listaContactos = Utils.readFile(activity);
+                    listaContactos.remove(Utils.getPosition());
+                    listaContactos.add(Utils.getPosition(), contacto);
+                    Utils.escribirFichero(activity, listaContactos);
+
                     Toast.makeText(this, contacto.getNombre() + " ha sido editado", Toast.LENGTH_LONG).show();
                     finish();
-
-
                 }
                 break;
         }
     }
+
 }

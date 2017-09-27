@@ -21,12 +21,13 @@ import java.util.ArrayList;
 
 public class ListActivity extends Activity implements View.OnClickListener{
 
-    private ListView listView;
-    ArrayList<Contacto> contactos = new ArrayList<Contacto>();
-    private int pos;
-    private Contacto cont = new Contacto();
-    Activity activity;
-    ContactoAdaptador adaptador;
+    private static ListView listView;
+    private static ArrayList<Contacto> contactos = new ArrayList<Contacto>();
+    private static int pos;
+    private static Contacto cont = new Contacto();
+    private Activity activity = this;
+    private static ContactoAdaptador adaptador;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,33 +41,21 @@ public class ListActivity extends Activity implements View.OnClickListener{
         Button btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
 
+        contactos = Utils.readFile(this);
+        listView = (ListView) activity.findViewById(R.id.lv_main);
+        updateList();
 
-        FileInputStream in = null;
-        ObjectInputStream b = null;
-        try {
-            in = this.openFileInput("ListaContactos.dat");
-            b = new ObjectInputStream(in);
-            contactos = (ArrayList<Contacto>) b.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        this.listView = (ListView) findViewById(R.id.lv_main);
-        adaptador = new ContactoAdaptador(this, contactos);
-        this.listView.setAdapter(adaptador);
-        adaptador.notifyDataSetChanged();
 
         this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
             {
+                Utils.readFile(activity);
                 pos = position;
                 contactos.get(pos);
+                Utils.setPosition(pos);
                 dialog();
+                updateList();
             }
         });
 
@@ -79,13 +68,8 @@ public class ListActivity extends Activity implements View.OnClickListener{
         alerta.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface diag, int i) {
-
-                getDatos(contactos.get(pos));
-
-                Intent intDel = new Intent(ListActivity.this, DeleteActivity.class);
-                intDel.putExtra("cont", cont);
-                startActivityForResult(intDel, 0);
-                Toast.makeText(ListActivity.this, "Has seleccionado Borrar", Toast.LENGTH_SHORT).show();
+                Utils.getDatos(contactos.get(pos), cont, activity);
+                Utils.goDelete(activity, cont);
             }
         });
         alerta.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -97,25 +81,12 @@ public class ListActivity extends Activity implements View.OnClickListener{
         alerta.setNegativeButton("Editar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface diag, int i) {
-
-                getDatos(contactos.get(pos));
-
-                Intent intEdit = new Intent(ListActivity.this, EditActivity.class);
-                intEdit.putExtra("cont", cont);
-                startActivityForResult(intEdit, 0);
-                Toast.makeText(ListActivity.this, "Has seleccionado Editar", Toast.LENGTH_SHORT).show();
-
+                Utils.getDatos(contactos.get(pos), cont, activity);
+                Utils.goEdit(activity, cont);
+                updateList();
             }
         });
         alerta.show();
-    }
-
-    public void getDatos(Contacto pos){
-
-        cont.setNombre(pos.getNombre().toString());
-        cont.setMail(pos.getMail().toString());
-        cont.setTelefono(Integer.parseInt(pos.getTelefono().toString()));
-
     }
 
     @Override
@@ -123,4 +94,20 @@ public class ListActivity extends Activity implements View.OnClickListener{
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        updateList();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        updateList();
+        super.onStart();
+    }
+
+    public void updateList(){
+        adaptador = new ContactoAdaptador(activity, Utils.readFile(this));
+        listView.setAdapter(adaptador);
+    }
 }
