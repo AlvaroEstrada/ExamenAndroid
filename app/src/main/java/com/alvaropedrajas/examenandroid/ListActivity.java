@@ -21,6 +21,7 @@ public class ListActivity extends Activity implements View.OnClickListener{
     private static ContactoAdaptador adaptador;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
