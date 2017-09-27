@@ -29,11 +29,11 @@ public class Utils {
         cont.setTelefono(Integer.parseInt(pos.getTelefono().toString()));
     }
 
-    public static void goDelete(Activity activity, Contacto cont){
-        Intent intDel = new Intent(activity, DeleteActivity.class);
-        intDel.putExtra("cont", cont);
-        activity.startActivity(intDel);
-        Toast.makeText(activity, "Has seleccionado Borrar", Toast.LENGTH_SHORT).show();
+    public static void goDelete(Activity activity, ArrayList<Contacto> listaContactos, Contacto contacto){
+        listaContactos = Utils.readFile(activity);
+        listaContactos.remove(Utils.getPosition());
+        Utils.escribirFichero(activity, listaContactos);
+        Toast.makeText(activity, contacto.getNombre() + " ha sido borrado", Toast.LENGTH_LONG).show();
     }
 
     public static void goEdit(Activity activity, Contacto cont){

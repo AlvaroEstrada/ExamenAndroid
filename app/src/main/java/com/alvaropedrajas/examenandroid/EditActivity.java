@@ -103,7 +103,6 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
                     listaContactos.remove(Utils.getPosition());
                     listaContactos.add(Utils.getPosition(), contacto);
                     Utils.escribirFichero(activity, listaContactos);
-
                     Toast.makeText(this, contacto.getNombre() + " ha sido editado", Toast.LENGTH_LONG).show();
                     finish();
                 }

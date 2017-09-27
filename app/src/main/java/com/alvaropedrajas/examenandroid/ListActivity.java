@@ -58,8 +58,10 @@ public class ListActivity extends Activity implements View.OnClickListener{
         alerta.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface diag, int i) {
+                contactos = Utils.readFile(activity);
                 Utils.getDatos(contactos.get(pos), cont, activity);
-                Utils.goDelete(activity, cont);
+                Utils.goDelete(activity, contactos, cont);
+                updateList();
             }
         });
         alerta.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
