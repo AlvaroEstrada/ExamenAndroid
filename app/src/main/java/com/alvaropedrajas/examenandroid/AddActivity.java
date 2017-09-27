@@ -1,6 +1,6 @@
 package com.alvaropedrajas.examenandroid;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AddActivity extends AppCompatActivity implements View.OnClickListener {
@@ -21,7 +22,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
 
     boolean regFlag;
 
-    Contacto contacto;
+    private Contacto contacto = new Contacto();
+    private ArrayList<Contacto> listaContactos = new ArrayList<>();
+    private  Activity activity = this;
 
 
     @Override
@@ -82,17 +85,16 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnBack:
-                setResult(RESULT_CANCELED);
                 finish();
                 break;
             case R.id.btnOk:
                 getDatos(v);
-                if (regFlag){
-                    contacto = new Contacto();
-                    Intent intent = new Intent();
-                    regDatos(nom, mail, tel);
-                    intent.putExtra("contacto", contacto);
-                    setResult(RESULT_OK,intent);
+                regDatos(nom, mail, tel);
+                if (regFlag) {
+                    listaContactos = Utils.readFile(activity);
+                    listaContactos.add(contacto);
+                    Utils.escribirFichero(activity, listaContactos);
+                    Toast.makeText(this, contacto.getNombre() + " ha sido guardado", Toast.LENGTH_LONG).show();
                     finish();
                 }
                 break;

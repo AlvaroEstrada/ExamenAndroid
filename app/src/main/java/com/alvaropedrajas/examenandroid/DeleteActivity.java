@@ -1,14 +1,15 @@
 package com.alvaropedrajas.examenandroid;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class DeleteActivity extends AppCompatActivity implements View.OnClickListener{
@@ -19,7 +20,9 @@ public class DeleteActivity extends AppCompatActivity implements View.OnClickLis
 
     boolean delFlag;
 
-    Contacto contacto;
+    private Contacto contacto = new Contacto();
+    private ArrayList<Contacto> listaContactos = new ArrayList<>();
+    private Activity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,17 +81,16 @@ public class DeleteActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnBack:
-                setResult(RESULT_CANCELED);
                 finish();
                 break;
             case R.id.btnDel:
                 getDatos(v);
+                regDatos(nom, mail, tel);
                 if (delFlag){
-                    contacto = new Contacto();
-                    Intent intent = new Intent();
-                    regDatos(nom, mail, tel);
-                    intent.putExtra("contacto", contacto);
-                    setResult(RESULT_OK,intent);
+                    listaContactos = Utils.readFile(activity);
+                    listaContactos.remove(contacto);
+                    Utils.escribirFichero(activity, listaContactos);
+                    Toast.makeText(this, contacto.getNombre() + " ha sido borrado", Toast.LENGTH_LONG).show();
                     finish();
                 }
                 break;
