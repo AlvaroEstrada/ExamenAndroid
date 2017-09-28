@@ -34,14 +34,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         listaContactos = Utils.readFile(activity);
         switch (v.getId()){
             case R.id.btnAdd:
-                Intent intAdd = new Intent(this, AddActivity.class);
-                this.startActivity(intAdd);
+                this.startActivity(createintent(AddActivity.class));
                 break;
 
             case R.id.btnDel:
                 if (listaContactos.size() > 0){
-                    Intent intDel = new Intent(this, DeleteActivity.class);
-                    this.startActivity(intDel);
+                    this.startActivity(createintent(DeleteActivity.class));
                 }else{
                     Toast.makeText(this, "¡La lista de contactos está vacia!", Toast.LENGTH_LONG).show();
                 }
@@ -49,14 +47,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btnList:
                 if (listaContactos.size() > 0){
-                    Intent intList = new Intent(this, ListActivity.class);
-                    this.startActivity(intList);
+                    this.startActivity(createintent(ListActivity.class));
                 }else{
                     Toast.makeText(this, "¡La lista de contactos está vacia!", Toast.LENGTH_LONG).show();
                 }
 
                 break;
         }
+
+    }
+    private Intent createintent(Class c){
+        return new Intent(this, c);
 
     }
 }
