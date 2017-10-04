@@ -56,6 +56,34 @@ public class Utils {
         return position;
     }
 
+
+    // -------------------------- LEER Y ASIGNAR EL ARCHIVO AL ARRAYLIST -------------------------------
+    /*public static ArrayList<Contacto> readFile(Activity activity){
+        ObjectInputStream file = null;
+        ArrayList<Contacto> listaContactos = new ArrayList<>();
+
+        try {
+            FileInputStream in = activity.openFileInput("ListaContactos.dat");
+            file = new ObjectInputStream(in);
+            listaContactos = (ArrayList<Contacto>) file.readObject();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (file != null) {
+                    file.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return listaContactos;
+        }
+    }*/
+
+    // -------------------------- LEER Y ASIGNAR BASE DE DATOS AL ARRAYLIST -------------------------------
     public static ArrayList<Contacto> readFile(Activity activity){
         ObjectInputStream file = null;
         ArrayList<Contacto> listaContactos = new ArrayList<>();
